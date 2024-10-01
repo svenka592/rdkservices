@@ -3123,7 +3123,7 @@ namespace WPEFramework {
 
         uint32_t DisplaySettings::setVolumeLevel(const JsonObject& parameters, JsonObject& response)
         {
-                //LOGINFOMETHOD();
+                LOGINFOMETHOD();
                 returnIfParamNotFound(parameters, "volumeLevel");
                 string sLevel = parameters["volumeLevel"].String();
                 float level = 0;
@@ -3137,14 +3137,18 @@ namespace WPEFramework {
 
                 bool success = true;
                 string audioPort = parameters.HasLabel("audioPort") ? parameters["audioPort"].String() : "HDMI0";
+		LOGWARN("TEST : DisplaySettings called Audio Port :%s\n", audioPort.c_str());
+
                 try
                 {
                         device::AudioOutputPort aPort = device::Host::getInstance().getAudioOutputPort(audioPort);
 			current_volumelevel = (int)aPort.getLevel();
+
                         aPort.setLevel(level);
                         if(current_volumelevel != (int)level)
                         {
                             JsonObject params;
+			    LOGWARN("Test : current_volumelevel : %d Level : %d \n",current_volumelevel,(int)level);
                             params["volumeLevel"] = (int)level;
                             sendNotify("volumeLevelChanged", params);
                         }
